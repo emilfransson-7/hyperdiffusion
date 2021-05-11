@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Governing equations &#8212; Hyperdiffusion 0.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Application of hyperdiffusion" href="hyperdiff.html" />
+    <link rel="prev" title="Welcome to Hyperdiffusion proof of principle’s documentation!" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="hyperdiff.html" title="Application of hyperdiffusion"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Hyperdiffusion proof of principle’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Hyperdiffusion 0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Governing equations</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="governing-equations">
+<h1>Governing equations<a class="headerlink" href="#governing-equations" title="Permalink to this headline">¶</a></h1>
+<p>In this section we will derive the governing equation for the particle density for an integrated model. We will only derive the equations for an implicit solver as explicit solvers are not used
+in modern integrated models due to their higher numerical instabilities.</p>
+<p>We will start with the continuity equation which describes the density evolution in the plasma:</p>
+<div class="math notranslate nohighlight">
+\[\frac{\partial}{\partial t} &lt;n&gt; + \frac{1}{v'}\frac{\partial}{\partial \rho} ( v' &lt;\Gamma^{\rho}&gt;) = &lt;S&gt;\]</div>
+<p>n is the particle density, v’ is te, <span class="math notranslate nohighlight">\(\rho\)</span> is the flux coordinate, <span class="math notranslate nohighlight">\(\Gamma\)</span> is the particle flux and S is the internal particle source.
+The brackets denote flux surface averaging.</p>
+<p>The particle flux can be divided into a diffusive and a pinch part.</p>
+<div class="math notranslate nohighlight">
+\[&lt;\Gamma^{\rho}&gt;=-D \frac{\partial &lt;n&gt;}{\partial \rho} &lt;|\vec{\nabla} \rho_t|^2&gt;+ &lt;n&gt; &lt;|\vec{\nabla} \rho_t|&gt; V\]</div>
+<p>We can put this in the continuity equation:</p>
+<div class="math notranslate nohighlight">
+\[v' \frac{\partial &lt;n&gt;}{\partial t} + \frac{\partial}{\partial \rho} \left( - v' D \frac{\partial &lt;n&gt;}{\partial \rho} &lt;|\vec{\nabla} \rho_t|^2&gt;+ v'&lt;n&gt; &lt;|\vec{\nabla} \rho_t|&gt; V\right) =v' &lt;S&gt;\]</div>
+<p>By integrating and using the finite difference approach we can get an equation system which we can solve. We will from now on also drop the brackets for flux surface averaging, but they
+are still there.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}&amp;\int_{i-1/2}^{i+1/2} v' \frac{\partial n}{\partial t}  d \rho= - \left(- v' D \frac{\partial n}{\partial \rho} |\vec{\nabla} \rho_t|^2+ v'n |\vec{\nabla} \rho_t| V \right)_{i+1/2}
++ \left( - v' D \frac{\partial n}{\partial \rho} |\vec{\nabla} \rho_t|^2+ v'n |\vec{\nabla} \rho_t| V \right)_{i-1/2} \\
+&amp;+ \int_{i-1/2}^{i+1/2} v' S d\rho\end{split}\]</div>
+<p>Let’s approximate the integral on the right hand side as the volume (:math’Delta V’) multiply with the value at the centre of the volume. And use finite difference method on the derivative on the density:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\frac{\partial n_i}{\partial t} \Delta V_i=&amp;D_{i+1/2} v'_{i+1/2} |\vec{\nabla} \rho|^2_{i+1/2}\frac{n_{i+1}-n_{i}}{\rho_{i+1}-\rho_{i}} - |\vec{\nabla} \rho|_{i+1/2} V_{i+1/2} v'_{i+1/2} n_{i+1/2} \\
++&amp; D_{i-1/2} v'_{i-1/2} |\vec{\nabla} \rho|^2_{i-1/2} \frac{n_{i}-n_{i-1}}{\rho_{i}-\rho_{i-1}}+ |\vec{\nabla} \rho|_{i-1/2} V_{i-1/2} v'_{i-1/2} n_{i-1/2} \\
++&amp; \int_{i-1/2}^{i+1/2} v' S d\rho\end{split}\]</div>
+<p>Assume equidistant grid in <span class="math notranslate nohighlight">\(\rho\)</span>. <span class="math notranslate nohighlight">\(h=\rho_{i+1}-\rho_{i}=\rho_{i}-\rho_{i-1}\)</span>. And that the densities between two points are an average of the points closes:
+<span class="math notranslate nohighlight">\(n_{i+1/2} = (n_{i+1}+n_{i})/2\)</span>, <span class="math notranslate nohighlight">\(n_{i-1/2} = (n_{i}+n_{i-1})/2\)</span></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\frac{\partial n_i}{\partial t} \Delta V_i=&amp; n_{i-1} \left( \frac{D_{i-1/2} v'_{i-1/2}|\vec{\nabla} \rho|^2_{i-1/2}}{h} +\frac{V_{i-1/2} v'_{i-1/2}|\vec{\nabla} \rho|_{i-1/2}}{2} \right) \\
++&amp;n_{i} \left(-\frac{D_{i+1/2} v'_{i+1/2}|\vec{\nabla} \rho|^2_{i+1/2}}{h}-\frac{V_{i+1/2} v'_{i+1/2}|\vec{\nabla} \rho|_{i+1/2}}{2} -\frac{D_{i-1/2} v'_{i-1/2}|\vec{\nabla} \rho|^2_{i-1/2}}{h} \right. \\
++&amp; \left. \frac{V_{i-1/2} v'_{i-1/2}|\vec{\nabla} \rho|_{i-1/2}}{2} \right) \\
++&amp;n_{i+1} \left( \frac{D_{i+1/2} v'_{i+1/2}|\vec{\nabla} \rho|^2_{i+1/2}}{h} -\frac{V_{i+1/2} v'_{i+1/2}|\vec{\nabla} \rho|_{i+1/2}}{2} \right) \\
++&amp; \int_{i-1/2}^{i+1/2} v' S d\rho\end{split}\]</div>
+<p>The integral RHS can be approximate as:</p>
+<div class="math notranslate nohighlight">
+\[\int_{i-1/2}^{i+1/2} v' S d\rho= \Delta V_i S_i\]</div>
+<p>Now we will work towards an implicit solver. This means that the gradient on the RHS is of the next timestep. This makes an explicit solver much simpler but much more unstable as well.
+We now denote <span class="math notranslate nohighlight">\(\hat{n}\)</span> describe the next time step, describe the current time step. math:<cite>tau</cite> is the time step.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}&amp; \hat{n}_{i-1} \left( \frac{D_{i-1/2} v'_{i-1/2}|\vec{\nabla} \rho|^2_{i-1/2}}{h} +\frac{V_{i-1/2} v'_{i-1/2}|\vec{\nabla} \rho|_{i-1/2}}{2} \right) \\
++&amp;\hat{n}_{i} \left(-\frac{\Delta V_i}{\tau}-\frac{D_{i+1/2} v'_{i+1/2}|\vec{\nabla} \rho|^2_{i+1/2}}{h}-\frac{V_{i+1/2} v'_{i+1/2}|\vec{\nabla} \rho|_{i+1/2}}{2} -\frac{D_{i-1/2} v'_{i-1/2}|\vec{\nabla} \rho|^2_{i-1/2}}{h} \right. \\
++&amp; \left. \frac{V_{i-1/2} v'_{i-1/2}|\vec{\nabla} \rho|_{i-1/2}}{2} \right) \\
++&amp;\hat{n}_{i+1} \left( \frac{D_{i+1/2} v'_{i+1/2}|\vec{\nabla} \rho|^2_{i+1/2}}{h} -\frac{V_{i+1/2} v'_{i+1/2}|\vec{\nabla} \rho|_{i+1/2}}{2} \right) \\
+=&amp; -\frac{\Delta V_i}{\tau}n_{i}- \int_{i-1/2}^{i+1/2} v' S d\rho\end{split}\]</div>
+<p>The equation system is the basis for an implicit solver. It doesn’t include any hyperdiffussion which we will introduce in the next section.</p>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to Hyperdiffusion proof of principle’s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="hyperdiff.html"
+                        title="next chapter">Application of hyperdiffusion</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/equations.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="hyperdiff.html" title="Application of hyperdiffusion"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Hyperdiffusion proof of principle’s documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Hyperdiffusion 0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Governing equations</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Emil Fransson.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
+    </div>
+  </body>
+</html>

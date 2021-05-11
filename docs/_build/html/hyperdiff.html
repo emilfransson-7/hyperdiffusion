@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Application of hyperdiffusion &#8212; Hyperdiffusion 0.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Script features" href="codefeatures.html" />
+    <link rel="prev" title="Governing equations" href="equations.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="codefeatures.html" title="Script features"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="equations.html" title="Governing equations"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Hyperdiffusion 0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Application of hyperdiffusion</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="application-of-hyperdiffusion">
+<h1>Application of hyperdiffusion<a class="headerlink" href="#application-of-hyperdiffusion" title="Permalink to this headline">¶</a></h1>
+<p>In this section we will introduce hyperdiffusion into the equation system which we derived in the last section. We will add hyperdiffusion in two different ways, firstly as an additional diffusion and pinch and
+secondly as an additional diffusion and pinch. Both these options are available in the script and they (should) yield the same results.</p>
+<p>First, we start with the additional diffusion and pinch. We use the flux split into two parts:</p>
+<div class="math notranslate nohighlight">
+\[\Gamma^{\rho}=-D \frac{\partial n}{\partial \rho} |\vec{\nabla} \rho_t|^2+ n |\vec{\nabla} \rho_t| V\]</div>
+<p>We add a hyperdiffusion by switching the diffusion: math:<cite>bar{D}</cite>. i.e. <span class="math notranslate nohighlight">\(D \rightarrow D +\bar{D}\)</span>. We need to also add a “hyperdiffusion” pinch so that we add zero flux:</p>
+<div class="math notranslate nohighlight">
+\[\bar{V}=\bar{D}\frac{|\vec{\nabla} \rho_t|^2}{n |\vec{\nabla} \rho_t|}  \frac{\partial n}{\partial \rho}\]</div>
+<p>To add hyperdiffussion in solver just: <span class="math notranslate nohighlight">\(\bar{D}\)</span>. i.e. <span class="math notranslate nohighlight">\(D \rightarrow D +\bar{D}\)</span> and <span class="math notranslate nohighlight">\(\bar{D}\)</span>. i.e. <span class="math notranslate nohighlight">\(V \rightarrow V +\bar{V}\)</span></p>
+<p>The other way how one can add hyperdiffusion is a bit different. This is the hyperdiffusion and an extra “source” approach.</p>
+<p>Now in the same way as before we add a hyperdiffusion <span class="math notranslate nohighlight">\(\bar{D}\)</span>. i.e. <span class="math notranslate nohighlight">\(D \rightarrow D +\bar{D}\)</span> and then add a “source” term. The “source” term is added to counter the additional flux
+from the added hyperdiffusion, but instead of using the gradient implicitly (as for the hyperdiffusion) we subtract explicitly calculated gradient with the same hyperdiffusion value. For an implicit solver:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int_{i-1/2}^{i+1/2} v' \frac{\partial n}{\partial t}  d \rho &amp;= - \left(- v' (D+\bar{D}) \frac{\partial n}{\partial \rho} |\vec{\nabla} \rho_t|^2+ v'n |\vec{\nabla} \rho_t| V \right)_{i+1/2, hat} \\
+&amp;+\left( - v'(D+\bar{D}) \frac{\partial n}{\partial \rho} |\vec{\nabla} \rho_t|^2+v'n|\vec{\nabla} \rho_t| V \right)_{i-1/2, hat} \\
+&amp;+ \left(- v' \bar{D} \frac{\partial n}{\partial \rho} |\vec{\nabla} \rho_t|^2 \right)_{i+1/2} -\left(- v' \bar{D} \frac{\partial n}{\partial \rho} |\vec{\nabla} \rho_t|^2 \right)_{i-1/2}+ \int_{i-1/2}^{i+1/2} v' S d\rho\end{split}\]</div>
+<p>“hat” denotes next time step and it is calculated at time step t + <span class="math notranslate nohighlight">\(\tau\)</span> and everything else is calculated at time t. If we assume again assume equidistant radial positions we end up with this expression:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}&amp;\hat{n}_{i-1} \left( \frac{(D+\bar{D})_{i-1/2} v'_{i-1/2}\|\vec{\nabla} \rho|^2_{i-1/2}}{h} +\frac{V_{i-1/2} v'|\vec{\nabla} \rho|_{i-1/2}}{2} \right) \\
++&amp;\hat{n}_{i} \left(-\frac{(D+\bar{D})_{i+1/2} v'_{i+1/2}|\vec{\nabla} \rho|^2_{i+1/2}}{h}-\frac{V_{i+1/2} v'_{i+1/2}|\vec{\nabla} \rho|_{i+1/2}}{2} -\frac{(D+\bar{D})_{i-1/2} v'_{i-1/2}|\vec{\nabla} \rho|^2_{i-1/2}}{h} \right. \\
++&amp; \left. \frac{V_{i-1/2} v'_{i-1/2}|\vec{\nabla} \rho|_{i-1/2}}{2} \right) \\
++&amp;\hat{n}_{i+1} \left( \frac{(D+\bar{D})_{i+1/2} v'_{i+1/2}|\vec{\nabla} \rho|^2_{i+1/2}}{h} -\frac{V_{i+1/2} v'_{i+1/2}|\vec{\nabla} \rho|_{i+1/2}}{2} \right) = \\
+&amp; n_{i-1} \left( \frac{\bar{D}_{i-1/2} v'_{i-1/2}|\vec{\nabla} \rho|^2_{i-1/2}}{h}  \right) \\
++&amp; n_{i} \left( -\frac{\bar{D}_{i+1/2} v'_{i+1/2}|\vec{\nabla} \rho|^2_{i+1/2}}{h}  - \frac{\bar{D}_{i-1/2} v'_{i-1/2}|\vec{\nabla} \rho|^2_{i-1/2}}{h}-\frac{\Delta V_i}{\tau} \right) \\
++&amp; n_{i+1} \left( \frac{\bar{D}_{i+1/2} v'_{i+1/2}|\vec{\nabla} \rho|^2_{i+1/2}}{h}  \right)  \\
+-&amp;\int_{i-1/2}^{i+1/2} v' S d\rho\end{split}\]</div>
+<p>We can see that line 5,6 and 7 is the hyperdiffusion “source”.</p>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="equations.html"
+                        title="previous chapter">Governing equations</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="codefeatures.html"
+                        title="next chapter">Script features</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/hyperdiff.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="codefeatures.html" title="Script features"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="equations.html" title="Governing equations"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Hyperdiffusion 0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Application of hyperdiffusion</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Emil Fransson.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+
+
+Application of hyperdiffusion
+=============================
+
+In this section we will introduce different feutures of the hyperdiffusion script. 
+
+The only pinch we have and it can be set by choosing setting the parameter. The default value is 0.5 [m/s]. This is a very crude "model" but as we only and the pinch is independt of the density gradient it is 
+sufficent for 
+
+There are four different type of transport "models" to calculate the diffusion which the script uses. The first is just a constant diffusio, the second is a model quadraticel proportional to the
+the normalized density gradient. The third is like the the second one with a constant diffusion . The fourth, and the one recommended to use, is a mimic of the IFSPPL model. This gives the effect what the 
+Ion Temperature Gradient - mode (which is usually the dominant mode) has a (density) gradient. Below this value we have a very small diffsuion but above the diffusion is 
+the diffusion rapidly increases with the normalized gradient.    
+
+	
+
+
+

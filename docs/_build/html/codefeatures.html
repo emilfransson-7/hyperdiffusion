@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Script features &#8212; Hyperdiffusion 0.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The functions of the script" href="thecode.html" />
+    <link rel="prev" title="Application of hyperdiffusion" href="hyperdiff.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="thecode.html" title="The functions of the script"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="hyperdiff.html" title="Application of hyperdiffusion"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Hyperdiffusion 0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Script features</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="script-features">
+<h1>Script features<a class="headerlink" href="#script-features" title="Permalink to this headline">¶</a></h1>
+<p>In this section we will introduce different features of the hyperdiffusion script. First, we will discuss the more general information the script needs to work properly.
+The script has three major inputs which the script loop over all iterations of. The three inputs are:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>rho_pos_array</dt><dd><p>Define the number of points in the radial grid. Can use multiple values as input, the script loop through all input.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>time_step_array</dt><dd><p>Timestep in [s]. Can use multiple values as input, the script loop through all input.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>hyper_diff_array</dt><dd><p>Value for the hyperdiffusion if one uses it. Can use multiple values as input, the script loop through all input.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>The script will do a simulation with each instant of these three inputs. It will later save the output (only the last time step) as a simple .txt-file.
+Be aware if you have done a simulation with the same input it will be overwritten. The script will also print the time evolution of the density profile. A typical output can look like this:</p>
+<img alt="https://am3pap007files.storage.live.com/y4mOLfMRlg0-83WthxD5bNOrti0QJEx1RzrR0Y0GX8IHd1uMsz91mCL4O93SPoFh31e6pOJC8k6WGhLTnA4bHpmHoIT-zzt3YXjkhEBgh5vHWgUzcC-Ax-62KKg4mfI5rO1UdXuOGiGiRifUXIzRgvLrYuy1uXJzdxjFvAnQJbv7RyO360LUMTJHNceoDMZWxZr?width=640&amp;height=480&amp;cropmode=none" src="https://am3pap007files.storage.live.com/y4mOLfMRlg0-83WthxD5bNOrti0QJEx1RzrR0Y0GX8IHd1uMsz91mCL4O93SPoFh31e6pOJC8k6WGhLTnA4bHpmHoIT-zzt3YXjkhEBgh5vHWgUzcC-Ax-62KKg4mfI5rO1UdXuOGiGiRifUXIzRgvLrYuy1uXJzdxjFvAnQJbv7RyO360LUMTJHNceoDMZWxZr?width=640&amp;height=480&amp;cropmode=none" />
+<p>In the figure we can see the initial and the evolution at 5 equidistant timepoints. We can notice that the profile converges towards the models
+quasi steady state.</p>
+<p>The script also print a couple of things in the terminal which can be seen in the figure below:</p>
+<img alt="https://am3pap007files.storage.live.com/y4m60t0LxnAnJwSPUlLJq2G7ov7z9E5oJDFylAhBjuiQVoqVlL-h_j51FQ2z1MP3915T2PqIC4qrXf0w_xtt7fjopecayOX499paOrPotDi0YhFR1OTQucHBS0DoixEjZ2gTlvs6mm9ZCJD7_DXMeSIklL1Hc-J9VY6wsMFtISLzVM5l2WyIXb7a4TyLPTyqSB6?width=525&amp;height=200&amp;cropmode=none" src="https://am3pap007files.storage.live.com/y4m60t0LxnAnJwSPUlLJq2G7ov7z9E5oJDFylAhBjuiQVoqVlL-h_j51FQ2z1MP3915T2PqIC4qrXf0w_xtt7fjopecayOX499paOrPotDi0YhFR1OTQucHBS0DoixEjZ2gTlvs6mm9ZCJD7_DXMeSIklL1Hc-J9VY6wsMFtISLzVM5l2WyIXb7a4TyLPTyqSB6?width=525&amp;height=200&amp;cropmode=none" />
+<p>This was a run with three simulation and the script indicates when each of them is done. The output also denotes when if it overwrites previously stored data.
+It also indicates of long the run took.</p>
+<p>There are a couple of other inputs that the user might want to change. We will give a short description of them here:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>t_end</dt><dd><p>Define the end time of the simulation. (The simulation starts at 0). An easy way to see if t_end is large enough is to look if the profiles have saturated to a steady-state,
+as the flux is dependent on the gradient and the source. At a certain gradient the flux and the source will be equal, and the profiles have reach a so called “quasi steady state”.
+It might take some time to reach there, however.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>t_save</dt><dd><p>Define of often the script store the density profile.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>rho_tor_cut_of</dt><dd><p>Defines the normalized radial position outside where we do not evolve the profiles</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>d_hyperdiff_chooser</dt><dd><p>Define how the hyperdiffusion is added or not. 0 means that we do not use hyperdiffusion. 1 we add hyperdiffusion as diffusion and pinch, 2 as a pinch and a “source” term.
+We discussed both these methods in the previous section.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>choose_d</dt><dd><p>Choose of how the diffusion is calculated. There are four different type of transport “models” to calculate the diffusion which the script uses. The first is just a constant diffusion, the second is a model quadratically proportional to the
+the normalized density gradient. The third is like the second one with a constant diffusion. The fourth, and the one recommended to use, is a mimic of the IFSPPL model. This gives the effect of the
+Ion Temperature Gradient - mode (which is usually the dominant mode) and it’s dependency on a critical (density) gradient. Below this value we have a very small diffusion but above the diffusion is
+rapidly increasing with the normalized gradient.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>choose_convergence_factor</dt><dd><p>Defines the accuracy for the convergence. 0.0001 is a reasonable value. The simulations usually need more iteration in the beginning, for later time steps the simulations usually
+only need one iteration. It is an average over the whole radial profile.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>max_iterations</dt><dd><p>Determines the maximum number of iterations in the convergence loop. A value of 10 is usually a high enough value.
+The number of iterations is usually largest for the first time steps.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>b_pos, b_height, b_sol, b_width, b_slope</dt><dd><p>Defines the density initial profile.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>A word of the pinch we use in the script. We only use a constant value and the default is 0.5 [m/s]. This is a very crude “model” but as we only evolve the density and the pinch is not dependent of the density gradient it is
+sufficient for our script.</p>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="hyperdiff.html"
+                        title="previous chapter">Application of hyperdiffusion</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="thecode.html"
+                        title="next chapter">The functions of the script</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/codefeatures.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="thecode.html" title="The functions of the script"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="hyperdiff.html" title="Application of hyperdiffusion"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Hyperdiffusion 0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Script features</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Emil Fransson.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
+    </div>
+  </body>
+</html>
